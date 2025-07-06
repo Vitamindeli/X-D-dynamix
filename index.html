@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>X-D Dynamix</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 960px;
+      margin: auto;
+      padding: 30px;
+      background: #f2f6fa;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 36px;
+    }
+    .hidden { display: none; }
+    .question {
+      background: #fff;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 300px;
+      font-size: 16px;
+    }
+    button {
+      background-color: #0077cc;
+      color: white;
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #005fa3;
+    }
+    label {
+      display: block;
+      margin: 5px 0;
+    }
+    #resultSection {
+      background: #e0ffe0;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>X-D Dynamix</h1>
+
+  <div id="userForm">
+    <h2>Enter Your Name</h2>
+    <input type="text" id="name" placeholder="Enter your name" required><br><br>
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <form id="quizForm" class="hidden">
+    <h2 id="welcomeText"></h2>
+    <div id="quizQuestions"></div>
+    <button type="submit">Submit Quiz</button>
+  </form>
+
+  <div id="resultSection" class="hidden">
+    <h2>Quiz Completed!</h2>
+    <p id="resultText"></p>
+  </div>
+
+  <script>
+    const questions = [
+      { question: "Who is the main character in the chapter 'The Making of a Scientist'?", options: ["APJ Abdul Kalam", "Richard Ebright", "Albert Einstein", "Isaac Newton"], answer: "Richard Ebright" },
+      { question: "What did Ebright collect in childhood?", options: ["Coins", "Butterflies", "Rocks", "Leaves"], answer: "Butterflies" },
+      { question: "Who encouraged Ebright’s curiosity?", options: ["His uncle", "His teacher", "His mother", "His friend"], answer: "His mother" },
+      { question: "Which book inspired Ebright’s interest in monarch butterflies?", options: ["The Monarch Files", "The Making of a Biologist", "The Travels of Monarch X", "Wings of Wonder"], answer: "The Travels of Monarch X" },
+      { question: "What did Ebright send to scientists?", options: ["Drawings", "Specimens", "Maps", "Poems"], answer: "Specimens" },
+      { question: "Ebright’s mother bought him a microscope in:", options: ["2nd grade", "3rd grade", "7th grade", "5th grade"], answer: "7th grade" },
+      { question: "What did Ebright try to figure out?", options: ["Flying speed", "Wing color", "How cells work", "How wings grow"], answer: "How cells work" },
+      { question: "Which competition did Ebright participate in?", options: ["Olympiad", "Intel Science Fair", "Science Talent Search", "Science Bowl"], answer: "Science Talent Search" },
+      { question: "What project won him a high school award?", options: ["Insect study", "DNA theory", "Genetic code of butterflies", "How cells read DNA"], answer: "How cells read DNA" },
+      { question: "Ebright worked at which university?", options: ["Stanford", "Harvard", "MIT", "Yale"], answer: "Harvard" },
+      { question: "What made Ebright successful?", options: ["Competitiveness", "Only intelligence", "Hard work and curiosity", "Luck"], answer: "Hard work and curiosity" },
+      { question: "Main insect of his research?", options: ["Beetles", "Monarch Butterflies", "Moths", "Dragonflies"], answer: "Monarch Butterflies" },
+      { question: "Why did he raise butterflies?", options: ["Fun", "Selling", "Track migration", "Gift friends"], answer: "Track migration" },
+      { question: "What did he win in 8th grade?", options: ["Scholarship", "Science fair", "Essay contest", "Spelling bee"], answer: "Science fair" },
+      { question: "Later, which field fascinated him?", options: ["Robotics", "Chemistry", "Genetics", "Meteorology"], answer: "Genetics" },
+      { question: "Besides science, he loved:", options: ["Sports", "Literature", "Debate and public speaking", "Music"], answer: "Debate and public speaking" },
+      { question: "His work contributed to:", options: ["Human anatomy", "Animal behavior", "Genetic engineering", "Evolution"], answer: "Genetic engineering" },
+      { question: "He proved DNA:", options: ["Controls body size", "Glows in dark", "Controls cell function", "Causes mutation"], answer: "Controls cell function" },
+      { question: "Which quality did he lack?", options: ["Curiosity", "Patience", "Creativity", "Arrogance"], answer: "Arrogance" },
+      { question: "His journey began with:", options: ["Butterfly", "Friend", "Gift", "Microscope"], answer: "Butterfly" },
+      { question: "His mother ensured access to:", options: ["Toys", "Pet lab", "Books", "Private tutors"], answer: "Books" },
+      { question: "First scientific work on:", options: ["Birds", "Frogs", "Fungi", "Butterfly caterpillars"], answer: "Butterfly caterpillars" },
+      { question: "He discovered about cells:", options: ["No DNA", "Glow", "Read genetic code", "Cannot divide"], answer: "Read genetic code" },
+      { question: "Which helped him win?", options: ["Boasting", "Anger", "Diligence", "Overconfidence"], answer: "Diligence" },
+      { question: "Why was this chapter written?", options: ["His fame", "His mother", "His journey to scientist", "His awards"], answer: "His journey to scientist" }
+    ];
+
+    function startQuiz() {
+      const name = document.getElementById("name").value.trim();
+      if (!name) {
+        alert("Please enter your name.");
+        return;
+      }
+
+      document.getElementById("userForm").classList.add("hidden");
+      document.getElementById("quizForm").classList.remove("hidden");
+      document.getElementById("welcomeText").innerText = `Welcome, ${name}!`;
+
+      const quizDiv = document.getElementById("quizQuestions");
+      quizDiv.innerHTML = "";
+
+      questions.forEach((q, i) => {
+        const qDiv = document.createElement("div");
+        qDiv.classList.add("question");
+        qDiv.innerHTML = `<p><strong>Q${i + 1}.</strong> ${q.question}</p>` +
+          q.options.map(opt =>
+            `<label><input type="radio" name="q${i}" value="${opt}"> ${opt}</label>`
+          ).join('');
+        quizDiv.appendChild(qDiv);
+      });
+
+      document.getElementById("quizForm").onsubmit = function (e) {
+        e.preventDefault();
+
+        let score = 0;
+        let incomplete = false;
+
+        questions.forEach((q, i) => {
+          const selected = document.querySelector(`input[name="q${i}"]:checked`);
+          if (!selected) incomplete = true;
+          if (selected && selected.value === q.answer) score++;
+        });
+
+        if (incomplete) {
+          alert("Please answer all questions before submitting.");
+          return;
+        }
+
+        document.getElementById("quizForm").classList.add("hidden");
+        document.getElementById("resultSection").classList.remove("hidden");
+        document.getElementById("resultText").innerText =
+          `${name}, your score is ${score} out of ${questions.length}.`;
+
+        // 🔁 Send to Google Sheet
+        const scriptURL = "https://script.google.com/macros/s/AKfycbzf2yyN52xxwejCcMdBOmsuPZdBVgrhpu58n1Xe1rshvKfetxK8zkMLZQXIocWf5TQv/exec"; // Replace this
+        fetch(scriptURL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, score })
+        })
+        .then(res => res.json())
+        .then(data => console.log("Submitted to sheet:", data))
+        .catch(err => console.error("Submission error:", err));
+      };
+    }
+  </script>
+
+</body>
+</html>
+
